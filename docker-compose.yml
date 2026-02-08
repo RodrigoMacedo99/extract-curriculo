@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: resume_db
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  app:
+    build: .
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=mysql://root:rootpassword@db:3306/resume_db
+      - NODE_ENV=production
+      - JWT_SECRET=your_jwt_secret_here
+      - VITE_APP_ID=your_app_id
+      - OAUTH_SERVER_URL=your_oauth_url
+      - OWNER_OPEN_ID=your_owner_id
+      - BUILT_IN_FORGE_API_URL=your_forge_url
+      - BUILT_IN_FORGE_API_KEY=your_forge_key
+      - PORT=3000
+    depends_on:
+      - db
+
+volumes:
+  mysql_data:
